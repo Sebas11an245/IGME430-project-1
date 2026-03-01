@@ -23,6 +23,9 @@ const handleResponse = async (response) => {
             break;
     }
 
+    // HEAD has no body
+    if (response.method === 'HEAD') return;
+
     const obj = await response.json();
 
     if (Array.isArray(obj)) {
@@ -35,9 +38,9 @@ const handleResponse = async (response) => {
 };
 
 // Uses fetch to send GET request
-const sendGet = async (form) => {
-    const name = form.querySelector('#nameField').value;
-    const type = form.querySelector('#typeField').value;
+const sendGet = async () => {
+    const name = document.querySelector('#nameField').value;
+    const type = document.querySelector('#typeField').value;
 
     let url = '/api/pokemon?';
 
@@ -54,8 +57,8 @@ const sendGet = async (form) => {
     handleResponse(response);
 };
 // GET by ID
-const sendGetById = async (form) => {
-    const id = form.querySelector('#idField').value;
+const sendGetById = async () => {
+    const id = document.querySelector('#idField').value;
 
     const url = `/api/pokemonById?id=${id}`;
 
@@ -97,6 +100,44 @@ const sendPost = async (form) => {
 
     handleResponse(response);
 };
+
+// POST update Pokemon
+const sendUpdate = async (form) => {
+    const url = form.action;
+    const dataType = document.querySelector('#updateDataType').value;
+
+    const id = document.querySelector('#updateId').value;
+    const name = document.querySelector('#updateName').value;
+    const type = document.querySelector('#updateType').value;
+
+    let formData = `id=${id}&name=${name}&type=${type}`;
+
+    if (dataType === 'application/json') {
+        formData = JSON.stringify({ id, name, type });
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': dataType,
+            Accept: 'application/json',
+        },
+        body: formData,
+    });
+
+    handleResponse(response);
+};
+
+// HEAD request
+const sendHead = async () => {
+    const response = await fetch('/api/pokemon', {
+        method: 'HEAD',
+        headers: { Accept: 'application/json' },
+    });
+
+    const content = document.querySelector('#content');
+    content.innerHTML = `<b>HEAD request success. Status: ${response.status}</b>`;
+};
 // Display pokemon as cards
 const displayPokemon = (pokemonList) => {
     const content = document.querySelector('#content');
@@ -126,21 +167,43 @@ const init = () => {
     const searchForm = document.querySelector('#searchForm');
     const idForm = document.querySelector('#idForm');
     const addForm = document.querySelector('#addForm');
+    const updateForm = document.querySelector('#updateForm');
+    const headForm = document.querySelector('#headForm');
 
-    searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendGet(searchForm);
-    });
+    if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendGet();
+        });
+    }
 
-    idForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendGetById(idForm);
-    });
+    if (idForm) {
+        idForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendGetById();
+        });
+    }
 
-    addForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendPost(addForm);
-    });
+    if (addForm) {
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendPost(e.target);
+        });
+    }
+
+    if (updateForm) {
+        updateForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendUpdate(e.target);
+        });
+    }
+
+    if (headForm) {
+        headForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendHead();
+        });
+    }
 };
 
 window.onload = init;

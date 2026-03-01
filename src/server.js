@@ -42,6 +42,8 @@ const parseBody = (request, response, handler) => {
 const handlePost = (request, response, parsedUrl) => {
     if (parsedUrl.pathname === '/api/addPokemon') {
         parseBody(request, response, jsonHandler.addPokemon);
+    } else if (parsedUrl.pathname === '/api/updatePokemon') {
+        parseBody(request, response, jsonHandler.updatePokemon);
     } else {
         response.writeHead(404, { 'Content-Type': 'application/json' });
         response.write(JSON.stringify({ message: 'Endpoint not found' }));
@@ -71,6 +73,19 @@ const handleGet = (request, response, parsedUrl) => {
         response.end();
     }
 };
+// Handle HEAD requests
+const handleHead = (request, response, parsedUrl) => {
+    const queryParams = Object.fromEntries(parsedUrl.searchParams);
+
+    if (parsedUrl.pathname === '/api/pokemon') {
+        jsonHandler.headPokemon(request, response, queryParams);
+    } else if (parsedUrl.pathname === '/api/pokemonById') {
+        jsonHandler.headPokemonById(request, response, queryParams);
+    } else {
+        response.writeHead(404, { 'Content-Type': 'application/json' });
+        response.end();
+    }
+};
 
 // Main request handler
 const onRequest = (request, response) => {
@@ -79,6 +94,8 @@ const onRequest = (request, response) => {
 
     if (request.method === 'POST') {
         handlePost(request, response, parsedUrl);
+    } else if (request.method === 'HEAD') {
+        handleHead(request, response, parsedUrl);
     } else {
         handleGet(request, response, parsedUrl);
     }

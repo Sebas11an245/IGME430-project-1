@@ -4,7 +4,7 @@
 <head>
     <title>Pokedex Client</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
-    <script src="/client.js"></script>
+    <script src="/client.js" defer></script>
 </head>
 
 <body>
@@ -35,7 +35,7 @@
                 <option value="Dragon">Dragon</option>
             </select>
 
-            <input type="submit" value="Search Pokémon" />
+            <input type="submit" value="Search Pokemon" />
         </form>
         <!-- Search by ID -->
         <form id="idForm" action="/api/pokemonById" method="get">
@@ -46,7 +46,7 @@
 
         <!-- Add Pokemon -->
         <form id="addForm" action="/api/addPokemon" method="post">
-            <h3>Add Pokémon</h3>
+            <h3>Add Pokemon</h3>
             <input id="addId" type="number" placeholder="ID" required />
             <input id="addName" type="text" placeholder="Name" required />
             <input id="addType" type="text" placeholder="Type (comma separated)" required />
@@ -56,11 +56,32 @@
                 <option value="application/json">JSON</option>
             </select>
 
-            <input type="submit" value="Add Pokémon" />
+            <input type="submit" value="Add Pokemon" />
+        </form>
+        <!-- Update Pokemon -->
+        <form id="updateForm" action="/api/updatePokemon" method="post">
+            <h3>Update Pokemon</h3>
+            <input id="updateId" type="number" placeholder="Existing ID" required>
+            <input id="updateName" type="text" placeholder="New Name (optional)">
+            <input id="updateType" type="text" placeholder="New Type (optional)">
+
+            <select id="updateDataType">
+                <option value="application/x-www-form-urlencoded">URL Encoded</option>
+                <option value="application/json">JSON</option>
+            </select>
+
+            <input type="submit" value="Update Pokemon">
+        </form>
+
+        <!-- HEAD request -->
+        <form id="headForm">
+            <h3>Test HEAD Request</h3>
+            <input type="submit" value="Send HEAD to /api/pokemon">
+        </form>
     </section>
 
     <section id="content">
-        <!-- Pokémon cards appear here -->
+        <!-- Pokemon cards appear here -->
     </section>
 </body>
 
