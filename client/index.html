@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pokedex Client</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+
+    <script>
+        // Handles FETCH response
+        const handleResponse = async (response) => {
+            const content = document.querySelector('#content');
+
+            switch (response.status) {
+                case 200:
+                    content.innerHTML = '<b>Success</b>';
+                    break;
+                case 204:
+                    content.innerHTML = '<b>No Content</b>';
+                    return;
+                case 400:
+                    content.innerHTML = '<b>Bad Request</b>';
+                    break;
+                case 404:
+                    content.innerHTML = '<b>Not Found</b>';
+                    break;
+                default:
+                    content.innerHTML = 'Error code not implemented by client.';
+                    break;
+            }
+
+            const obj = await response.json();
+            displayPokemon(obj);
+        };
+
+        // Uses fetch to send GET request
+        const sendGet = async (form) => {
+            const name = form.querySelector('#nameField').value;
+            const type = form.querySelector('#typeField').value;
+
+            let url = '/api/pokemon?';
+
+            if (name) {
+                url += `name=${name}&`;
+            }
+
+            if (type) {
+                url += `type=${type}`;
+            }
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+
+            handleResponse(response);
+        };
+
+        // Display pokemon as cards
+        const displayPokemon = (pokemonList) => {
+            const content = document.querySelector('#content');
+            content.innerHTML = '';
+
+            if (!pokemonList || pokemonList.length === 0) {
+                content.innerHTML = '<p>No Pokémon found.</p>';
+                return;
+            }
+
+            pokemonList.forEach((pokemon) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+
+                card.innerHTML = `
+          <h3>${pokemon.name}</h3>
+          <p><strong>ID:</strong> ${pokemon.id}</p>
+          <p><strong>Type:</strong> ${pokemon.type.join(', ')}</p>
+        `;
+
+                content.appendChild(card);
+            });
+        };
+
+        // Init function
+        const init = () => {
+            const pokeForm = document.querySelector('#pokeForm');
+
+            const getPokemon = (e) => {
+                e.preventDefault();
+                sendGet(pokeForm);
+                return false;
+            };
+
+            pokeForm.addEventListener('submit', getPokemon);
+        };
+
+        window.onload = init;
+    </script>
+</head>
+
+<body>
+    <section id="top">
+        <h3>Pokédex Search</h3>
+
+        <form id="pokeForm" action="/api/pokemon" method="get">
+            <label for="name">Name:</label>
+            <input id="nameField" type="text" name="name" />
+
+            <label for="type">Type:</label>
+            <select id="typeField" name="type">
+                <option value="">All</option>
+                <option value="Normal">Normal</option>
+                <option value="Fire">Fire</option>
+                <option value="Water">Water</option>
+                <option value="Grass">Grass</option>
+                <option value="Electric">Electric</option>
+                <option value="Ice">Ice</option>
+                <option value="Fighting">Fighting</option>
+                <option value="Poison">Poison</option>
+                <option value="Ground">Ground</option>
+                <option value="Flying">Flying</option>
+                <option value="Psychic">Psychic</option>
+                <option value="Bug">Bug</option>
+                <option value="Rock">Rock</option>
+                <option value="Ghost">Ghost</option>
+                <option value="Dragon">Dragon</option>
+            </select>
+
+            <input type="submit" value="Search Pokémon" />
+        </form>
+    </section>
+
+    <section id="content">
+        <!-- Pokémon cards appear here -->
+    </section>
+</body>
+
+</html>
