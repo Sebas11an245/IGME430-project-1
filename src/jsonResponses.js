@@ -66,8 +66,56 @@ const getTypes = (request, response) => {
   respondJSON(request, response, 200, Array.from(types));
 };
 
+// POST /api/addPokemon
+const addPokemon = (request, response) => {
+  const { id, name, type } = request.body;
+
+  // Validate input
+  if (!id || !name || !type) {
+    respondJSON(request, response, 400, {
+      message: 'ID, name, and type are required',
+    });
+    return;
+  }
+
+  const numId = Number(id);
+
+  if (Number.isNaN(numId)) {
+    respondJSON(request, response, 400, {
+      message: 'ID must be a number',
+    });
+    return;
+  }
+
+  // Check for duplicate ID
+  const exists = pokedex.find((p) => p.id === numId);
+
+  if (exists) {
+    respondJSON(request, response, 400, {
+      message: 'Pokemon with that ID already exists',
+    });
+    return;
+  }
+
+  // Build new Pokemon object
+  const newPokemon = {
+    id: numId,
+    name,
+    type: Array.isArray(type) ? type : type.split(','),
+  };
+
+  // Add to in-memory dataset
+  pokedex.push(newPokemon);
+
+  respondJSON(request, response, 201, {
+    message: 'Pokemon added successfully',
+    pokemon: newPokemon,
+  });
+};
+
 module.exports = {
   getPokemon,
   getPokemonById,
   getTypes,
+  addPokemon,
 };

@@ -31,8 +31,24 @@ const getCSS = (request, response) => {
     response.end();
   });
 };
+// serve client.js
+const getClientJS = (request, response) => {
+  fs.readFile(`${__dirname}/../client/client.js`, (err, data) => {
+    if (err) {
+      response.writeHead(500, { 'Content-Type': 'application/json' });
+      response.write(JSON.stringify({ message: 'File not found' }));
+      response.end();
+      return;
+    }
+
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.write(data);
+    response.end();
+  });
+};
 
 module.exports = {
   getIndex,
   getCSS,
+  getClientJS,
 };
