@@ -163,14 +163,14 @@ const displayPokemon = (pokemonList) => {
 };
 
 const getRandomPokemon = async () => {
-  const response = await fetch('/api/random', {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  });
- 
-  handleResponse(response);
+    const response = await fetch('/api/random', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+        },
+    });
+
+    handleResponse(response);
 };
 
 // Init function
@@ -216,6 +216,29 @@ const init = () => {
         headForm.addEventListener('submit', (e) => {
             e.preventDefault();
             sendHead();
+        });
+    }
+
+    let currentPanel = 0;
+    let startX = 0;
+
+    const carousel = document.querySelector('#carousel');
+    const panels = document.querySelectorAll('.panel');
+
+    if (carousel) {
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        carousel.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].clientX - startX;
+
+            if (diff > 50) currentPanel--;
+            if (diff < -50) currentPanel++;
+
+            currentPanel = Math.max(0, Math.min(currentPanel, panels.length - 1));
+
+            carousel.style.transform = `translateX(-${currentPanel * 100}%)`;
         });
     }
 };

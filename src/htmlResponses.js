@@ -4,7 +4,7 @@ const fs = require('fs');
 const getIndex = (request, response) => {
   fs.readFile(`${__dirname}/../client/index.html`, (err, data) => {
     if (err) {
-      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data),});
+      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data), });
       response.write(JSON.stringify({ message: 'File not found' }));
       response.end();
       return;
@@ -46,9 +46,24 @@ const getClientJS = (request, response) => {
     response.end();
   });
 };
+// serve docs.html
+const getDocs = (request, response) => {
+  fs.readFile(`${__dirname}/../client/doc.html`, (err, data) => {
+    if (err) {
+      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data), });
+      response.write(JSON.stringify({ message: 'File not found' }));
+      response.end();
+      return;
+    }
+    response.writeHead(200, { 'Content-Type': 'text/html', 'Content-Length': Buffer.byteLength(data), });
+    response.write(data);
+    response.end();
+  });
+};
 
 module.exports = {
   getIndex,
   getCSS,
   getClientJS,
+  getDocs,
 };

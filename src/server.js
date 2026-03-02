@@ -61,6 +61,8 @@ const handleGet = (request, response, parsedUrl) => {
         htmlHandler.getCSS(request, response);
     } else if (parsedUrl.pathname === '/client.js') {
         htmlHandler.getClientJS(request, response);
+    } else if (parsedUrl.pathname === '/doc.html') {
+        htmlHandler.getDocs(request, response);
     } else if (parsedUrl.pathname === '/api/pokemon') {
         jsonHandler.getPokemon(request, response, queryParams);
     } else if (parsedUrl.pathname === '/api/pokemonById') {

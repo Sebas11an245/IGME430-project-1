@@ -1,3 +1,11 @@
+#mobileUI {
+  display: none;
+}
+
+#desktopUI {
+  display: block;
+}
+
 body {
   font-family: Arial, sans-serif;
   padding: 1rem;
@@ -14,7 +22,9 @@ form {
   gap: 0.5rem;
 }
 
-input, select {
+input,
+select,
+button {
   padding: 0.5rem;
 }
 
@@ -28,10 +38,68 @@ input, select {
   background: white;
   border-radius: 10px;
   padding: 0.75rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
-button{
+
+button {
   margin-bottom: 1rem;
   padding: .85rem;
+}
+
+@media (max-width: 768px) {
+
+  body {
+    background: #b71c1c;
+  }
+
+  #desktopUI {
+    display: none;
+  }
+
+  #mobileUI {
+    display: block;
+  }
+
+  #pokedex {
+    max-width: 400px;
+    margin: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #display {
+    background: black;
+    color: lime;
+    padding: 1rem;
+    text-align: center;
+    border: 4px solid #555;
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px lime;
+  }
+
+  #pokeImage {
+    width: 150px;
+    height: auto;
+  }
+
+  #carousel {
+    flex: 1;
+    display: flex;
+    overflow-x: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .panel {
+    min-width: 100%;
+    padding: 1rem;
+    background: #eee;
+    border-top: 4px solid #333;
+    overflow-y: auto;
+  }
+
+  .panel form {
+    margin-top: 0.5rem;
+  }
 }

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pokedex API Documentation</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2 {
+            color: #c62828;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .endpoint {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/index.html">← Back to Pokedex App</a>
+    <h1>Pokedex API Documentation</h1>
+
+    <p>
+        This API provides access to a Pokémon dataset. Users can retrieve Pokémon
+        using GET requests and modify the dataset using POST requests. All responses
+        are returned in JSON format.
+    </p>
+
+    <h2>Base URL</h2>
+    <p><code>http://localhost:3000</code></p>
+
+    <hr />
+
+    <!-- GET /api/pokemon -->
+    <div class="endpoint">
+        <h2>GET /api/pokemon</h2>
+        <p>Returns a list of Pokémon. Supports query parameters.</p>
+
+        <p><strong>Query Parameters:</strong></p>
+        <ul>
+            <li><code>name</code> (optional) – filter by Pokémon name</li>
+            <li><code>type</code> (optional) – filter by Pokémon type</li>
+        </ul>
+
+        <p><strong>Example:</strong></p>
+        <code>/api/pokemon?type=Fire</code>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>200 – Success</li>
+            <li>204 – No results found</li>
+        </ul>
+    </div>
+
+    <!-- GET /api/pokemonById -->
+    <div class="endpoint">
+        <h2>GET /api/pokemonById</h2>
+        <p>Returns a single Pokémon by ID.</p>
+
+        <p><strong>Query Parameters:</strong></p>
+        <ul>
+            <li><code>id</code> (required) – Pokémon ID number</li>
+        </ul>
+
+        <p><strong>Example:</strong></p>
+        <code>/api/pokemonById?id=25</code>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>200 – Success</li>
+            <li>400 – Invalid ID</li>
+            <li>404 – Pokémon not found</li>
+        </ul>
+    </div>
+
+    <!-- GET /api/types -->
+    <div class="endpoint">
+        <h2>GET /api/types</h2>
+        <p>Returns a list of all Pokémon types in the dataset.</p>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>200 – Success</li>
+        </ul>
+    </div>
+
+    <!-- GET /api/random -->
+    <div class="endpoint">
+        <h2>GET /api/random</h2>
+        <p>Returns one random Pokémon from the dataset.</p>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>200 – Success</li>
+        </ul>
+    </div>
+
+    <!-- POST /api/addPokemon -->
+    <div class="endpoint">
+        <h2>POST /api/addPokemon</h2>
+        <p>Adds a new Pokémon to the dataset.</p>
+
+        <p><strong>Body Parameters:</strong></p>
+        <ul>
+            <li><code>id</code> – number</li>
+            <li><code>name</code> – string</li>
+            <li><code>type</code> – array or comma-separated string</li>
+        </ul>
+
+        <p><strong>Accepted Formats:</strong></p>
+        <ul>
+            <li>application/json</li>
+            <li>application/x-www-form-urlencoded</li>
+        </ul>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>201 – Created</li>
+            <li>400 – Missing or invalid data</li>
+        </ul>
+    </div>
+
+    <!-- POST /api/updatePokemon -->
+    <div class="endpoint">
+        <h2>POST /api/updatePokemon</h2>
+        <p>Updates an existing Pokémon’s name, ID, or type.</p>
+
+        <p><strong>Body Parameters:</strong></p>
+        <ul>
+            <li><code>id</code> – ID of Pokémon to update</li>
+            <li><code>name</code> (optional)</li>
+            <li><code>type</code> (optional)</li>
+        </ul>
+
+        <p><strong>Status Codes:</strong></p>
+        <ul>
+            <li>200 – Updated successfully</li>
+            <li>400 – Invalid data</li>
+            <li>404 – Pokémon not found</li>
+        </ul>
+    </div>
+
+    <!-- HEAD -->
+    <div class="endpoint">
+        <h2>HEAD Requests</h2>
+        <p>
+            All GET endpoints also support HEAD requests. HEAD requests return the same
+            headers as GET requests but do not include a response body.
+        </p>
+    </div>
+
+    <hr />
+
+    <h2>Response Format</h2>
+    <p>All responses are returned in JSON format and include appropriate HTTP status codes.</p>
+
+    <h2>Client Usage</h2>
+    <p>
+        The client application uses the Fetch API to send GET, POST, and HEAD requests
+        to the server and dynamically updates the page with Pokémon data.
+    </p>
+
+</body>
+
+</html>
