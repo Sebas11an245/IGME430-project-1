@@ -137,9 +137,6 @@ const getRandomPokemon = (request, response) => {
 
 // HEAD /api/random
 const headRandomPokemon = (request, response) => {
-    const randomIndex = Math.floor(Math.random() * pokedex.length);
-    const randomPokemon = pokedex[randomIndex];
-
     respondHEAD(request, response, 200);
 };
 
@@ -234,8 +231,7 @@ const updatePokemon = (request, response) => {
         pokemon.type = Array.isArray(type) ? type : type.split(',');
     }
 
-    response.writeHead(204, headers);
-    response.end();
+    respondHEAD(request, response, 200);
 };
 
 module.exports = {
