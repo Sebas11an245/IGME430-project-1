@@ -31,3 +31,7 @@ input, select {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   text-align: center;
 }
+button{
+  margin-bottom: 1rem;
+  padding: .85rem;
+}

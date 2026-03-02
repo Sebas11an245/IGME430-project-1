@@ -4,13 +4,13 @@ const fs = require('fs');
 const getIndex = (request, response) => {
   fs.readFile(`${__dirname}/../client/index.html`, (err, data) => {
     if (err) {
-      response.writeHead(500, { 'Content-Type': 'application/json' });
+      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data),});
       response.write(JSON.stringify({ message: 'File not found' }));
       response.end();
       return;
     }
 
-    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.writeHead(200, { 'Content-Type': 'text/html', 'Content-Length': Buffer.byteLength(data), });
     response.write(data);
     response.end();
   });
@@ -20,13 +20,13 @@ const getIndex = (request, response) => {
 const getCSS = (request, response) => {
   fs.readFile(`${__dirname}/../client/style.css`, (err, data) => {
     if (err) {
-      response.writeHead(500, { 'Content-Type': 'application/json' });
+      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data), });
       response.write(JSON.stringify({ message: 'File not found' }));
       response.end();
       return;
     }
 
-    response.writeHead(200, { 'Content-Type': 'text/css' });
+    response.writeHead(200, { 'Content-Type': 'text/css', 'Content-Length': Buffer.byteLength(data), });
     response.write(data);
     response.end();
   });
@@ -35,13 +35,13 @@ const getCSS = (request, response) => {
 const getClientJS = (request, response) => {
   fs.readFile(`${__dirname}/../client/client.js`, (err, data) => {
     if (err) {
-      response.writeHead(500, { 'Content-Type': 'application/json' });
+      response.writeHead(500, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data), });
       response.write(JSON.stringify({ message: 'File not found' }));
       response.end();
       return;
     }
 
-    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.writeHead(200, { 'Content-Type': 'application/javascript', 'Content-Length': Buffer.byteLength(data), });
     response.write(data);
     response.end();
   });

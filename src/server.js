@@ -67,6 +67,8 @@ const handleGet = (request, response, parsedUrl) => {
         jsonHandler.getPokemonById(request, response, queryParams);
     } else if (parsedUrl.pathname === '/api/types') {
         jsonHandler.getTypes(request, response);
+    } else if (parsedUrl.pathname === '/api/random') {
+        jsonHandler.getRandomPokemon(request, response);
     } else {
         response.writeHead(404, { 'Content-Type': 'application/json' });
         response.write(JSON.stringify({ message: 'Resource not found' }));
@@ -81,6 +83,10 @@ const handleHead = (request, response, parsedUrl) => {
         jsonHandler.headPokemon(request, response, queryParams);
     } else if (parsedUrl.pathname === '/api/pokemonById') {
         jsonHandler.headPokemonById(request, response, queryParams);
+    } else if (parsedUrl.pathname === '/api/types') {
+        jsonHandler.headTypes(request, response, queryParams);
+    } else if (parsedUrl.pathname === '/api/random') {
+        jsonHandler.headRandomPokemon(request, response);
     } else {
         response.writeHead(404, { 'Content-Type': 'application/json' });
         response.end();

@@ -162,8 +162,22 @@ const displayPokemon = (pokemonList) => {
     });
 };
 
+const getRandomPokemon = async () => {
+  const response = await fetch('/api/random', {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+ 
+  handleResponse(response);
+};
+
 // Init function
 const init = () => {
+    const randomBtn = document.querySelector("#randomBtn");
+    randomBtn.addEventListener('click', getRandomPokemon);
+
     const searchForm = document.querySelector('#searchForm');
     const idForm = document.querySelector('#idForm');
     const addForm = document.querySelector('#addForm');

@@ -2,222 +2,251 @@ const pokedex = require('../data/pokedex.json');
 
 // Helper to send JSON
 const respondJSON = (request, response, status, object) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
-  response.write(JSON.stringify(object));
-  response.end();
+    const jsonString = JSON.stringify(object);
+    response.writeHead(status, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(jsonString), });
+    response.write(JSON.stringify(object));
+    response.end();
 };
 // Helper for HEAD responses
 const respondHEAD = (request, response, status) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
-  response.end();
+    response.writeHead(status, { 'Content-Type': 'application/json', 'Content-Length': 0, });
+    response.end();
 };
 
 // GET /api/pokemon
 const getPokemon = (request, response, query) => {
-  let results = pokedex;
+    let results = pokedex;
 
-  if (query.name) {
-    results = results.filter((p) =>
-      p.name.toLowerCase().includes(query.name.toLowerCase())
-    );
-  }
+    if (query.name) {
+        results = results.filter((p) =>
+            p.name.toLowerCase().includes(query.name.toLowerCase())
+        );
+    }
 
-  if (query.type) {
-    results = results.filter((p) =>
-      p.type.map((t) => t.toLowerCase()).includes(query.type.toLowerCase())
-    );
-  }
+    if (query.type) {
+        results = results.filter((p) =>
+            p.type.map((t) => t.toLowerCase()).includes(query.type.toLowerCase())
+        );
+    }
 
-  if (results.length === 0) {
-    respondJSON(request, response, 204, {});
-    return;
-  }
+    if (results.length === 0) {
+        respondJSON(request, response, 204, {});
+        return;
+    }
 
-  respondJSON(request, response, 200, results);
+    respondJSON(request, response, 200, results);
 };
 // HEAD /api/pokemon
 const headPokemon = (request, response, query) => {
-  let results = pokedex;
+    let results = pokedex;
 
-  if (query.name) {
-    results = results.filter((p) =>
-      p.name.toLowerCase().includes(query.name.toLowerCase())
-    );
-  }
+    if (query.name) {
+        results = results.filter((p) =>
+            p.name.toLowerCase().includes(query.name.toLowerCase())
+        );
+    }
 
-  if (query.type) {
-    results = results.filter((p) =>
-      p.type.map((t) => t.toLowerCase()).includes(query.type.toLowerCase())
-    );
-  }
+    if (query.type) {
+        results = results.filter((p) =>
+            p.type.map((t) => t.toLowerCase()).includes(query.type.toLowerCase())
+        );
+    }
 
-  if (results.length === 0) {
-    respondHEAD(request, response, 204);
-    return;
-  }
+    if (results.length === 0) {
+        respondHEAD(request, response, 204);
+        return;
+    }
 
-  respondHEAD(request, response, 200);
+    respondHEAD(request, response, 200);
 };
 
 // GET /api/pokemonById?id=#
 const getPokemonById = (request, response, query) => {
-  if (!query.id) {
-    respondJSON(request, response, 400, { message: 'ID is required' });
-    return;
-  }
+    if (!query.id) {
+        respondJSON(request, response, 400, { message: 'ID is required' });
+        return;
+    }
 
-  const id = Number(query.id);
+    const id = Number(query.id);
 
-  if (Number.isNaN(id)) {
-    respondJSON(request, response, 400, { message: 'ID must be a number' });
-    return;
-  }
+    if (Number.isNaN(id)) {
+        respondJSON(request, response, 400, { message: 'ID must be a number' });
+        return;
+    }
 
-  const result = pokedex.find((p) => p.id === id);
+    const result = pokedex.find((p) => p.id === id);
 
-  if (!result) {
-    respondJSON(request, response, 404, { message: 'Pokemon not found' });
-    return;
-  }
+    if (!result) {
+        respondJSON(request, response, 404, { message: 'Pokemon not found' });
+        return;
+    }
 
-  respondJSON(request, response, 200, result);
+    respondJSON(request, response, 200, result);
 };
 // HEAD /api/pokemonById
 const headPokemonById = (request, response, query) => {
-  if (!query.id) {
-    respondHEAD(request, response, 400);
-    return;
-  }
+    if (!query.id) {
+        respondHEAD(request, response, 400);
+        return;
+    }
 
-  const id = Number(query.id);
-  if (Number.isNaN(id)) {
-    respondHEAD(request, response, 400);
-    return;
-  }
+    const id = Number(query.id);
+    if (Number.isNaN(id)) {
+        respondHEAD(request, response, 400);
+        return;
+    }
 
-  const result = pokedex.find((p) => p.id === id);
+    const result = pokedex.find((p) => p.id === id);
 
-  if (!result) {
-    respondHEAD(request, response, 404);
-    return;
-  }
+    if (!result) {
+        respondHEAD(request, response, 404);
+        return;
+    }
 
-  respondHEAD(request, response, 200);
+    respondHEAD(request, response, 200);
 };
 
 // GET /api/types
 const getTypes = (request, response) => {
-  const types = new Set();
+    const types = new Set();
 
-  pokedex.forEach((p) => {
-    p.type.forEach((t) => types.add(t));
-  });
+    pokedex.forEach((p) => {
+        p.type.forEach((t) => types.add(t));
+    });
 
-  respondJSON(request, response, 200, Array.from(types));
+    respondJSON(request, response, 200, Array.from(types));
+};
+
+//HEAD /api/types
+const headTypes = (request, response) => {
+    const types = new Set();
+
+    pokedex.forEach((p) => {
+        p.type.forEach((t) => types.add(t));
+    });
+    respondHEAD(request,response, 200);
+};
+
+//GET /api/random
+const getRandomPokemon = (request, response) => {
+    const randomIndex = Math.floor(Math.random() * pokedex.length);
+    const randomPokemon = pokedex[randomIndex];
+
+    respondJSON(request, response, 200, randomPokemon);
+};
+
+// HEAD /api/random
+const headRandomPokemon = (request, response) => {
+    const randomIndex = Math.floor(Math.random() * pokedex.length);
+    const randomPokemon = pokedex[randomIndex];
+
+    respondHEAD(request, response, 200);
 };
 
 // POST /api/addPokemon
 const addPokemon = (request, response) => {
-  const { id, name, type } = request.body;
+    const { id, name, type } = request.body;
 
-  // Validate input
-  if (!id || !name || !type) {
-    respondJSON(request, response, 400, {
-      message: 'ID, name, and type are required',
+    // Validate input
+    if (!id || !name || !type) {
+        respondJSON(request, response, 400, {
+            message: 'ID, name, and type are required',
+        });
+        return;
+    }
+
+    const numId = Number(id);
+
+    if (Number.isNaN(numId)) {
+        respondJSON(request, response, 400, {
+            message: 'ID must be a number',
+        });
+        return;
+    }
+
+    // Check for duplicate ID
+    const exists = pokedex.find((p) => p.id === numId);
+
+    if (exists) {
+        respondJSON(request, response, 400, {
+            message: 'Pokemon with that ID already exists',
+        });
+        return;
+    }
+
+    // Build new Pokemon object
+    const newPokemon = {
+        id: numId,
+        name,
+        type: Array.isArray(type) ? type : type.split(','),
+    };
+
+    // Add to in-memory dataset
+    pokedex.push(newPokemon);
+
+    respondJSON(request, response, 201, {
+        message: 'Pokemon added successfully',
+        pokemon: newPokemon,
     });
-    return;
-  }
-
-  const numId = Number(id);
-
-  if (Number.isNaN(numId)) {
-    respondJSON(request, response, 400, {
-      message: 'ID must be a number',
-    });
-    return;
-  }
-
-  // Check for duplicate ID
-  const exists = pokedex.find((p) => p.id === numId);
-
-  if (exists) {
-    respondJSON(request, response, 400, {
-      message: 'Pokemon with that ID already exists',
-    });
-    return;
-  }
-
-  // Build new Pokemon object
-  const newPokemon = {
-    id: numId,
-    name,
-    type: Array.isArray(type) ? type : type.split(','),
-  };
-
-  // Add to in-memory dataset
-  pokedex.push(newPokemon);
-
-  respondJSON(request, response, 201, {
-    message: 'Pokemon added successfully',
-    pokemon: newPokemon,
-  });
 };
 
 // POST /api/updatePokemon
 const updatePokemon = (request, response) => {
-  const { id, newId, name, type } = request.body;
+    const { id, newId, name, type } = request.body;
 
-  if (!id) {
-    respondJSON(request, response, 400, {
-      message: 'Existing Pokemon ID is required',
-    });
-    return;
-  }
-
-  const numId = Number(id);
-  if (Number.isNaN(numId)) {
-    respondJSON(request, response, 400, {
-      message: 'ID must be a number',
-    });
-    return;
-  }
-
-  const pokemon = pokedex.find((p) => p.id === numId);
-
-  if (!pokemon) {
-    respondJSON(request, response, 404, {
-      message: 'Pokemon not found',
-    });
-    return;
-  }
-
-  // Update fields if provided
-  if (newId) {
-    const newNumId = Number(newId);
-    if (Number.isNaN(newNumId)) {
-      respondJSON(request, response, 400, { message: 'newId must be a number' });
-      return;
+    if (!id) {
+        respondJSON(request, response, 400, {
+            message: 'Existing Pokemon ID is required',
+        });
+        return;
     }
-    pokemon.id = newNumId;
-  }
 
-  if (name) pokemon.name = name;
+    const numId = Number(id);
+    if (Number.isNaN(numId)) {
+        respondJSON(request, response, 400, {
+            message: 'ID must be a number',
+        });
+        return;
+    }
 
-  if (type) {
-    pokemon.type = Array.isArray(type) ? type : type.split(',');
-  }
+    const pokemon = pokedex.find((p) => p.id === numId);
 
-  respondJSON(request, response, 204, {
-    message: 'Pokemon updated successfully',
-  });
+    if (!pokemon) {
+        respondJSON(request, response, 404, {
+            message: 'Pokemon not found',
+        });
+        return;
+    }
+
+    // Update fields if provided
+    if (newId) {
+        const newNumId = Number(newId);
+        if (Number.isNaN(newNumId)) {
+            respondJSON(request, response, 400, { message: 'newId must be a number' });
+            return;
+        }
+        pokemon.id = newNumId;
+    }
+
+    if (name) pokemon.name = name;
+
+    if (type) {
+        pokemon.type = Array.isArray(type) ? type : type.split(',');
+    }
+
+    response.writeHead(204, headers);
+    response.end();
 };
 
 module.exports = {
-  getPokemon,
-  getPokemonById,
-  getTypes,
-  addPokemon,
-  updatePokemon,
-  headPokemon,
-  headPokemonById,
+    getPokemon,
+    getPokemonById,
+    getTypes,
+    getRandomPokemon,
+    addPokemon,
+    updatePokemon,
+    headPokemon,
+    headPokemonById,
+    headTypes,
+    headRandomPokemon,
 };
